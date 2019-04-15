@@ -149,7 +149,7 @@ export class HeaderBar extends React.Component<IHeaderBarProps> {
         <span key="cat" {...css(STYLES.title)}>
           {categoryStr}
           {article && (<a href={article.url} target="_blank" {...css(COMMON_STYLES.cellLink)}>
-            <OpenInNew fontSize="small" />
+            <OpenInNew />
             </a>)}
         </span>
         
