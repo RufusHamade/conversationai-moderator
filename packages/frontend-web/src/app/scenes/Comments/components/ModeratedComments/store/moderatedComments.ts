@@ -97,21 +97,21 @@ const setCommentsModerationForCategoriesAction = createAction<ISetCommentsModera
   'article-detail-moderatored/SET_MODERATED_COMMENTS_STATUS_FOR_CATEGORIES',
 );
 
-export function loadModeratedCommentsForArticle(articleId: string, sort: Array<string>): IThunkAction<void> {
+export function loadModeratedCommentsForArticle(articleId: string, sort: Array<string>, tag: string): IThunkAction<void> {
   return async (dispatch) => {
     dispatch(loadModeratedCommentsStart());
 
-    const moderatedComments = await fetchModeratedCommentIdsForArticle(articleId, sort);
+    const moderatedComments = await fetchModeratedCommentIdsForArticle(articleId, sort, tag);
 
     await dispatch(loadModeratedCommentsForArticleComplete({ articleId, moderatedComments }));
   };
 }
 
-export function loadModeratedCommentsForCategory(category: string | 'all', sort: Array<string>): IThunkAction<Promise<void>> {
+export function loadModeratedCommentsForCategory(category: string | 'all', sort: Array<string>, tag: string): IThunkAction<Promise<void>> {
   return async (dispatch) => {
     dispatch(loadModeratedCommentsStart());
 
-    const moderatedComments = await fetchModeratedCommentIdsForCategory(category, sort);
+    const moderatedComments = await fetchModeratedCommentIdsForCategory(category, sort, tag);
 
     await dispatch(loadModeratedCommentsForCategoryComplete({ category, moderatedComments }));
   };

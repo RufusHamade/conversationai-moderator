@@ -93,9 +93,9 @@ export async function listModeratedCommentsPage(
 
   let mc: IModeratedComments;
   if (type === 'article') {
-    mc = await getModeratedCommentIdsForArticle(id, sort);
+    mc = await getModeratedCommentIdsForArticle(id, sort, tab);
   } else {
-    mc = await getModeratedCommentIdsForCategory(type === 'all' ? 'all' : id, sort);
+    mc = await getModeratedCommentIdsForCategory(type === 'all' ? 'all' : id, sort, tab);
   }
 
   checkModeratedComments(mc);

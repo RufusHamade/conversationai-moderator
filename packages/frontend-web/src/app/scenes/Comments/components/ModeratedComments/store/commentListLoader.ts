@@ -46,11 +46,13 @@ function loadCommentList(
       await dispatch(loadModeratedCommentsForArticle(
         articleId,
         sortDef,
+        tag,
       ));
     } else {
       await dispatch(loadModeratedCommentsForCategory(
         categoryId,
         sortDef,
+        tag,
       ));
     }
 
