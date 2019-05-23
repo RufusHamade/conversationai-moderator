@@ -346,7 +346,7 @@ export function executeSort(sortList: Array<string>) {
       case SORT_DEFERRED:
         return b.deferredCount - a.deferredCount;
       case SORT_HIGHLIGHTED:
-        return b.flaggedCount - a.flaggedCount;
+        return b.highlightedCount - a.highlightedCount;
       case SORT_FLAGGED:
         return b.flaggedCount - a.flaggedCount;
       case SORT_LAST_MODERATED:

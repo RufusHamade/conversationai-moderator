@@ -244,7 +244,7 @@ export interface IModeratedCommentsProps extends WithRouterProps {
   areAllSelected: boolean;
   getLinkTarget(comment: ICommentModel): string;
   article?: IArticleModel;
-  loadData?(categoryId: string, articleId: string, tag: string): void;
+  // loadData?(categoryId: string, articleId: string, tag: string): void;
   tagComments?(ids: Array<string>, tagId: string): any;
   dispatchAction?(action: IConfirmationAction, idsToDispatch: Array<string>): any;
   toggleSelectAll?(): any;
@@ -329,7 +329,8 @@ export class ModeratedComments
     if (prevState.loadedCategoryId !== nextProps.params.categoryId ||
         prevState.loadedArticleId !== nextProps.params.articleId ||
         prevState.loadedTag !== nextProps.params.tag) {
-      nextProps.loadData(nextProps.params.categoryId, nextProps.params.articleId, nextProps.params.tag);
+      // Note: change sort always happens at the same time and makes a competing (and more accurate) request 
+      // nextProps.loadData(nextProps.params.categoryId, nextProps.params.articleId, nextProps.params.tag);
     }
 
     const actionLabel = nextProps.params.tag;
