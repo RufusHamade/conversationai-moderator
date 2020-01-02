@@ -18,8 +18,9 @@ import { List, Map } from 'immutable';
 import { Action, createAction, handleActions } from 'redux-actions';
 import { makeTypedFactory, TypedRecord } from 'typed-immutable-record';
 
-import { IArticleModel, ModelId } from '../../models';
+import { IArticleModel, ModelId, ArticleModel } from '../../models';
 import { IAppStateRecord } from './index';
+import { requestArticle } from '../platform/websocketService';
 
 const STATE_ROOT = ['global', 'articles'];
 const INDEX = [...STATE_ROOT, 'index'];
@@ -32,7 +33,36 @@ export function getArticles(state: IAppStateRecord): Map<ModelId, IArticleModel>
 }
 
 export function getArticle(state: IAppStateRecord, articleId: ModelId): IArticleModel {
-  return getArticles(state).get(articleId);
+  const article = getArticles(state).get(articleId);
+  if (!article && typeof articleId !== "undefined") {
+    requestArticle(articleId);
+    // Temporarily respond with an empty article while we fetch the actual data over the socket
+    return ArticleModel({
+      id: articleId,
+      sourceCreatedAt: "",
+      updatedAt: "",
+      title: "",
+      text: "",
+      url: "",
+      categoryId: "51",
+      allCount: 0,
+      unprocessedCount: 0,
+      unmoderatedCount: 0,
+      moderatedCount: 0,
+      deferredCount: 0,
+      approvedCount: 0,
+      highlightedCount: 0,
+      rejectedCount: 0,
+      flaggedCount: 0,
+      batchedCount: 0,
+      automatedCount: 0,
+      lastModeratedAt: "",
+      assignedModerators: new Array<ModelId>(),
+      isCommentingEnabled: true,
+      isAutoModerated: true
+    });
+  }
+  return article;
 }
 
 export interface IArticlesState {

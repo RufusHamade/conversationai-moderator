@@ -225,3 +225,15 @@ export function disconnectNotifier() {
   clearInterval(intervalTimer);
   ws.close();
 }
+
+
+
+export function requestArticle(articleId: string) {
+  const request = {
+    type: "article-request",
+    data: {
+      id: articleId,
+    }
+  };
+  ws.send(JSON.stringify(request));
+}
