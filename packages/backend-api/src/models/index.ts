@@ -34,6 +34,35 @@ import { User } from './user';
 import { UserCategoryAssignment } from './user_category_assignment';
 import { UserSocialAuth } from './user_social_auth';
 
+// Do back associations after initialising everything else
+Comment.hasMany(Decision, {
+  as: 'decisions',
+});
+Category.belongsToMany(User, {
+  through: {
+    model: UserCategoryAssignment,
+    unique: false,
+  },
+  foreignKey: 'categoryId',
+  as: 'assignedModerators',
+});
+Article.belongsToMany(User, {
+  through: {
+    model: ModeratorAssignment,
+    unique: false,
+  },
+  foreignKey: 'articleId',
+  as: 'assignedModerators',
+});
+User.belongsToMany(Article, {
+  through: {
+    model: ModeratorAssignment,
+    unique: false,
+  },
+  foreignKey: 'userId',
+  as: 'assignedArticles',
+});
+
 export const byName: any = {
   Article,
   Category,

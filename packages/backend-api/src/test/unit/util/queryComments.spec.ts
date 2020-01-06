@@ -15,13 +15,12 @@ limitations under the License.
 */
 
 import {
-  Article, Category, Comment, Tag, TaggingSensitivity,
-} from '../../../models';
-import {
-  ICategoryInstance,
-  ICommentInstance,
-  ICommentScoreInstance,
-  ITagInstance,
+  Article,
+  Category,
+  Comment,
+  CommentScore,
+  Tag,
+  TaggingSensitivity,
 } from '../../../models';
 
 import {
@@ -45,13 +44,13 @@ import {
 
 describe('queryComments Functions', () => {
   describe('filterTopScoresByTaggingSensitivity', () => {
-    let category: ICategoryInstance;
-    let tag: ITagInstance;
-    let comment1: ICommentInstance;
-    let comment2: ICommentInstance;
+    let category: Category;
+    let tag: Tag;
+    let comment1: Comment;
+    let comment2: Comment;
     let topScores: ITopScores;
-    let comment1Top: ICommentScoreInstance;
-    let comment2Top: ICommentScoreInstance;
+    let comment1Top: CommentScore;
+    let comment2Top: CommentScore;
 
     beforeEach(async () => {
       await Comment.destroy({where: {}});

@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 import * as Joi from 'joi';
-import * as Sequelize from 'sequelize';
+import { BelongsToManyGetAssociationsMixin, DataTypes, Model } from 'sequelize';
 
 import { sequelize } from '../sequelize';
-import { IArticleInstance } from './article';
-import { ICategoryInstance } from './category';
-import { IBaseAttributes, IBaseInstance } from './constants';
+import { Article } from './article';
 import { updateHappened } from './last_update';
 
 export const USER_GROUP_GENERAL = 'general';
@@ -66,60 +64,59 @@ export interface IServiceExtra {
   jwt: any;
 }
 
-export interface IUserAttributes extends IBaseAttributes {
+export class User extends Model {
+  id: number;
   group: string;
   email?: string;
   name: string;
   isActive: boolean;
   avatarURL?: string | null;
   extra?: IScorerExtra | IIntegrationExtra | IServiceExtra | null;
+
+  getAssignedArticles: BelongsToManyGetAssociationsMixin<Article>;
 }
 
-export type  IUserInstance = Sequelize.Instance<IUserAttributes> & IUserAttributes & IBaseInstance & {
-  getAssignedArticles: Sequelize.BelongsToManyGetAssociationsMixin<IArticleInstance>;
-  countAssignedArticles: Sequelize.BelongsToManyCountAssociationsMixin;
-  getAssignedCategories: Sequelize.BelongsToManyGetAssociationsMixin<ICategoryInstance>;
-  countAssignedCategories: Sequelize.BelongsToManyCountAssociationsMixin;
-};
-
-export const User = sequelize.define<IUserInstance, IUserAttributes>('user', {
+User.init({
   id: {
-    type: Sequelize.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
     autoIncrement: true,
   },
 
   group: {
-    type: Sequelize.ENUM(USER_GROUPS),
+    type: DataTypes.ENUM(...USER_GROUPS),
     allowNull: false,
   },
 
   name: {
-    type: Sequelize.CHAR(255),
+    type: DataTypes.CHAR(255),
     allowNull: false,
   },
 
   email: {
-    type: Sequelize.CHAR(255),
+    type: DataTypes.CHAR(255),
     allowNull: true,
   },
 
   isActive: {
-    type: Sequelize.BOOLEAN,
+    type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false,
   },
 
   avatarURL: {
-    type: Sequelize.CHAR(255),
+    type: DataTypes.CHAR(255),
     allowNull: true,
   },
 
   extra: {
-    type: Sequelize.JSON,
+    type: DataTypes.JSON,
     allowNull: true,
   },
 }, {
+
+  sequelize,
+  modelName: 'user',
   indexes: [
     {
       name: 'users_email',
@@ -163,34 +160,6 @@ export const User = sequelize.define<IUserInstance, IUserAttributes>('user', {
     afterBulkDestroy: updateHappened,
   },
 });
-
-User.associate = (models: any) => {
-  User.belongsToMany(models.Category, {
-    through: {
-      model: models.UserCategoryAssignment,
-      unique: false,
-    },
-    foreignKey: 'userId',
-  });
-
-  User.belongsToMany(models.Article, {
-    through: {
-      model: models.ModeratorAssignment,
-      unique: false,
-    },
-    foreignKey: 'userId',
-    as: 'assignedArticles',
-  });
-
-  User.belongsToMany(models.Category, {
-    through: {
-      model: models.UserCategoryAssignment,
-      unique: false,
-    },
-    foreignKey: 'userId',
-    as: 'assignedCategories',
-  });
-};
 
 export function isUser(instance: any) {
   // TODO: instanceof doesn't work under some circumstances that I don't really understand.

@@ -14,28 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import * as Sequelize from 'sequelize';
+import { DataTypes, Model } from 'sequelize';
+
 import { sequelize } from '../sequelize';
-import { IBaseAttributes, IBaseInstance } from './constants';
-
-export interface ILastUpdateAttributes extends IBaseAttributes {
-  lastUpdate: number;
-}
-
-export type ILastUpdateInstance = Sequelize.Instance<ILastUpdateAttributes> & ILastUpdateAttributes & IBaseInstance;
 
 /**
  * Category model
  */
-const LastUpdate = sequelize.define<ILastUpdateInstance, ILastUpdateAttributes>('last_updates', {
+
+class LastUpdate extends Model {
+  lastUpdate: number;
+}
+
+LastUpdate.init({
   id: {
-    type: Sequelize.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER.UNSIGNED,
     primaryKey: true,
   },
 
   lastUpdate: {
-    type: Sequelize.INTEGER.UNSIGNED,
+    type: DataTypes.INTEGER.UNSIGNED,
   },
+}, {
+  sequelize,
+  modelName: 'last_updates',
 });
 
 interface IInterestListener {

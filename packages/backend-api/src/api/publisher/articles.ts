@@ -17,14 +17,13 @@ limitations under the License.
 import {
   Article,
   Category,
-  IArticleInstance,
   ModeratorAssignment,
   updateHappened,
   UserCategoryAssignment,
 } from '../../models';
 
 export interface IArticleOptionallyCreated {
-  article: IArticleInstance;
+  article: Article;
   wasCreated: boolean;
 }
 

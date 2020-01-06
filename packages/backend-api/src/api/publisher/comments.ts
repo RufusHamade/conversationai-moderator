@@ -20,7 +20,6 @@ import { logger } from '../../logger';
 import {
   Article,
   Comment,
-  ICommentInstance,
 } from '../../models';
 import { postProcessComment } from '../../pipeline';
 import { enqueueSendCommentForScoringTask } from '../../processing';
@@ -30,7 +29,7 @@ import { enqueueSendCommentForScoringTask } from '../../processing';
  * with the model instance on succesful insertion or a rejection if the
  * comment already exists.
  */
-async function createCommentIfNew(commentData: any): Promise<ICommentInstance> {
+async function createCommentIfNew(commentData: any): Promise<Comment> {
   // Verify article existence
   const article = await Article.findOne({
     where: { sourceId: commentData.articleId },
@@ -72,7 +71,7 @@ async function createCommentIfNew(commentData: any): Promise<ICommentInstance> {
  * Given an array of comment data, return instances succesfully
  * created that weren't duplicates.
  */
-export function createComments(items: Array<any>): Bluebird<Array<ICommentInstance>> {
+export function createComments(items: Array<any>): Bluebird<Array<Comment>> {
   return Bluebird.mapSeries(items, createCommentIfNew)
       .then((createdComments) => Promise.resolve(createdComments));
 }
@@ -80,7 +79,7 @@ export function createComments(items: Array<any>): Bluebird<Array<ICommentInstan
 /**
  * Send the comments to the queue for scoring.
  */
-export async function sendCommentsToScoringQueue(comments: Array<ICommentInstance>): Promise<void> {
+export async function sendCommentsToScoringQueue(comments: Array<Comment>): Promise<void> {
   for (const c of comments) {
     await enqueueSendCommentForScoringTask(c.id);
   }

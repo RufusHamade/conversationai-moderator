@@ -21,14 +21,12 @@ import { ITopScores } from '../../domain';
 import {
   Article,
   Comment,
-  IArticleInstance,
-  ICommentInstance,
   TaggingSensitivity,
 } from '../../models';
 import { IFields, IListDetails }from '../jsonapi';
 import { list } from './SequelizeHandler';
 
-export async function filterTopScoresByTaggingSensitivity(maxScores: ITopScores, tagId?: number, getComment?: (commentId: string) => Promise<ICommentInstance | null>): Promise<ITopScores> {
+export async function filterTopScoresByTaggingSensitivity(maxScores: ITopScores, tagId?: number, getComment?: (commentId: string) => Promise<Comment | null>): Promise<ITopScores> {
   // Omit scores below defined sensitivities.
   const allTaggingSensitivities = await TaggingSensitivity.findAll();
 
@@ -37,7 +35,7 @@ export async function filterTopScoresByTaggingSensitivity(maxScores: ITopScores,
   });
 
   // Prefetch the associated article
-  const fetchComment = getComment || (async (commentId: string): Promise<ICommentInstance | null> => {
+  const fetchComment = getComment || (async (commentId: string): Promise<Comment | null> => {
     const id = parseInt(commentId, 10);
 
     return Comment.findByPk(
@@ -54,18 +52,18 @@ export async function filterTopScoresByTaggingSensitivity(maxScores: ITopScores,
   return Object.keys(maxScores).reduce((sum, commentId) => {
     const id = parseInt(commentId, 10);
     const scoreDetails = maxScores[id];
-    const comment = comments.find((c) => (c != null && c.id === id)) as ICommentInstance;
+    const comment = comments.find((c) => (c != null && c.id === id)) as Comment;
     const tagIdToFilter = tagId || comment.maxSummaryScoreTagId;
 
     const categoryTaggingSensitivity = allTaggingSensitivities.find((ts) => {
       // We've prefetched the assoicated article, so we can use 'get' to fetch it.
       // But that requires some munging of the sequelize types.
-      const article = (comment.get as (key: string) => IArticleInstance)('article');
+      const article = (comment.get as (key: string) => Article)('article');
       return article && ts.categoryId === article.categoryId && !ts.tagId;
     });
 
     const completeTaggingSensitivity = allTaggingSensitivities.find((ts) => {
-      const article = (comment.get as (key: string) => IArticleInstance)('article');
+      const article = (comment.get as (key: string) => Article)('article');
       return article && ts.categoryId === article.categoryId && ts.tagId === tagIdToFilter;
     });
 

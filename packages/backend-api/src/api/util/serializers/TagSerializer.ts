@@ -22,7 +22,7 @@ export class TagSerializer extends Serializer {
       'tags',
       prefix,
       null,
-      ['moderationRules', 'commentScores'],
+      [],
       ['updatedAt'],
     );
   }

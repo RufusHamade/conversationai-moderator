@@ -53,13 +53,13 @@ export function createSimpleRESTService(): express.Router {
 
     const userdata: Array<any> = [];
     for (const u of users) {
-      const simple = u.toJSON();
+      const simple = u.toJSON() as {[key: string]: any};
       if (req.params.type === USER_GROUP_SERVICE) {
         const token = await createToken(u.id);
         simple.extra = {jwt: token};
       }
       else if (u.extra) {
-        simple.extra = u.extra as object;
+        simple.extra = u.extra;
         // Make sure we don't send any access tokens out.
         delete simple.extra.token;
       }
