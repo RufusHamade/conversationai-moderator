@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import {BelongsToManyGetAssociationsMixin, DataTypes, Model} from 'sequelize';
+import { BelongsToManyGetAssociationsMixin, DataTypes, Model } from 'sequelize';
 
 import { sequelize } from '../sequelize';
 import { Category } from './category';
+import { Comment } from './comment';
 import { updateHappened } from './last_update';
 import { User } from './user';
 
@@ -46,6 +47,7 @@ export class Article extends Model {
   lastModeratedAt?: Date | null;
 
   getAssignedModerators: BelongsToManyGetAssociationsMixin<User>;
+  getComments: BelongsToManyGetAssociationsMixin<Comment>;
 }
 
 Article.init({

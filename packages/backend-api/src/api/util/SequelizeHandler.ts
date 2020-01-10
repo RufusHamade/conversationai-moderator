@@ -56,6 +56,7 @@ export async function sort(
 ): Promise<Array<number>> {
   const model = byType[type];
 
+  console.log('sort 1', model);
   const filters = {
     id: {
       [Op.in]: ids,
@@ -66,7 +67,8 @@ export async function sort(
 
   const order = buildOrder(sort || [], model);
 
-  const items: any = await model.findAll({
+  console.log('sort 2');
+  const items = await model.findAll({
     where: currentModelFilters,
     order,
     attributes: ['id'],

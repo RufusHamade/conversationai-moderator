@@ -78,12 +78,15 @@ async function getModeratedCounts(model: any, sortQuery: string, getWhere: (mode
     getWhere(model, { isModerated: true, isAutoResolved: true }),
   ]);
 
+  console.log('got here 3');
   const output = [];
 
   for (const r of results) {
+    console.log('got here 3a', r.length);
     const ids = r.map((c: any) => c.id);
 
     if (sortQuery) {
+      console.log('got here 3b');
       const sortedIds = await sort(
         'comments',
         ids,
@@ -92,9 +95,12 @@ async function getModeratedCounts(model: any, sortQuery: string, getWhere: (mode
 
       output.push(sortedIds);
     } else {
+      console.log('got here 3c');
       output.push(ids);
     }
   }
+
+  console.log('got here 4');
 
   return {
     approved: output[0],
@@ -122,8 +128,8 @@ export function createModeratedCountsService(): express.Router {
       return Promise.reject({ error: 404 });
     }
 
-    const data = await getModeratedCounts(model, sort, (article, where) => {
-      return article.getComments({
+    const data = await getModeratedCounts(model, sort, async (article, where) => {
+      return await article.getComments({
         where,
         attributes: ['id'],
       });
@@ -148,7 +154,9 @@ export function createModeratedCountsService(): express.Router {
         return Promise.reject({ error: 404 });
       }
 
+      console.log('got here 1');
       data = await getModeratedCounts(model, sort, async (_article, where) => {
+        console.log('got here 1a');
         return await Comment.findAll({
           where,
 
@@ -161,9 +169,10 @@ export function createModeratedCountsService(): express.Router {
           attributes: ['id'],
         });
       });
+      console.log('got here 2');
     } else {
       data = await getModeratedCounts(null, sort, async (_, where) => {
-        return await Comment.findAll({
+        return Comment.findAll({
           where,
           attributes: ['id'],
         });

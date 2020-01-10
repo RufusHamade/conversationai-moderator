@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 import { Article } from './article';
 import { Category } from './category';
 import { Comment } from './comment';
@@ -62,40 +61,9 @@ User.belongsToMany(Article, {
   foreignKey: 'userId',
   as: 'assignedArticles',
 });
+Article.hasMany(Comment);
 
-export const byName: any = {
-  Article,
-  Category,
-  Comment,
-  CommentScore,
-  CommentSummaryScore,
-  CommentFlag,
-  CommentScoreRequest,
-  CommentSize,
-  CommentTopScore,
-  CSRF,
-  Decision,
-  ModerationRule,
-  ModeratorAssignment,
-  Preselect,
-  Tag,
-  TaggingSensitivity,
-  User,
-  UserCategoryAssignment,
-  UserSocialAuth,
-};
-
-// Models can define an "associate" class method, which gets called
-// for each model that implements it, and provides a clean place
-// to create associations with other models without circular
-// dependencies
-Object.keys(byName).forEach((modelName) => {
-  if ('associate' in byName[modelName]) {
-    byName[modelName].associate(byName);
-  }
-});
-
-export const byType: any = {
+export const byType: {[key: string]: any} = {
   articles: Article,
   categories: Category,
   comments: Comment,
